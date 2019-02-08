@@ -1,5 +1,8 @@
-# Start dev container (absolute path need to be changed)
+# Start dev container (run once)
 docker run -d -it --volume=$PWD:/go/src/github.com/brocaar/lora-app-server --name lora_app_dev khbx/lora_app_dev:latest
+
+# Requirements (run once)
+sudo docker exec lora_app_dev /bin/sh -c "make dev-requirements && make ui-requirements && make requirements"
 
 # Compile and recreate imag
 sudo docker exec lora_app_dev /bin/sh -c "make clean && make build" && sudo docker build -t khbx/lora_app -f Dockerfile-khbx .
