@@ -58,6 +58,11 @@ func (a *GatewayAPI) Create(ctx context.Context, req *pb.CreateGatewayRequest) (
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mac: %s", err)
 	}
 
+	var mqttKey lorawan.EUI64
+	if err := mqttKey.UnmarshalText([]byte(req.Gateway.MqttKey)); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mqttKey: %s", err)
+	}
+
 	createReq := ns.CreateGatewayRequest{
 		Gateway: &ns.Gateway{
 			Id:       mac[:],
@@ -103,6 +108,7 @@ func (a *GatewayAPI) Create(ctx context.Context, req *pb.CreateGatewayRequest) (
 			OrganizationID:  req.Gateway.OrganizationId,
 			Ping:            req.Gateway.DiscoveryEnabled,
 			NetworkServerID: req.Gateway.NetworkServerId,
+			MqttKey:         mqttKey,
 		})
 		if err != nil {
 			return helpers.ErrToRPCError(err)
@@ -175,6 +181,7 @@ func (a *GatewayAPI) Get(ctx context.Context, req *pb.GetGatewayRequest) (*pb.Ge
 			DiscoveryEnabled: gw.Ping,
 			Location:         getResp.Gateway.Location,
 			NetworkServerId:  gw.NetworkServerID,
+			MqttKey:          gw.MqttKey.String(),
 		},
 		FirstSeenAt: getResp.FirstSeenAt,
 		LastSeenAt:  getResp.LastSeenAt,
@@ -314,6 +321,11 @@ func (a *GatewayAPI) Update(ctx context.Context, req *pb.UpdateGatewayRequest) (
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mac: %s", err)
 	}
 
+	var mqttKey lorawan.EUI64
+	if err := mqttKey.UnmarshalText([]byte(req.Gateway.MqttKey)); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mqttKey: %s", err)
+	}
+
 	err := a.validator.Validate(ctx, auth.ValidateGatewayAccess(auth.Update, mac))
 	if err != nil {
 		return nil, grpc.Errorf(codes.Unauthenticated, "authentication failed: %s", err)
@@ -328,6 +340,8 @@ func (a *GatewayAPI) Update(ctx context.Context, req *pb.UpdateGatewayRequest) (
 		gw.Name = req.Gateway.Name
 		gw.Description = req.Gateway.Description
 		gw.Ping = req.Gateway.DiscoveryEnabled
+
+		gw.MqttKey = mqttKey
 
 		err = storage.UpdateGateway(tx, &gw)
 		if err != nil {

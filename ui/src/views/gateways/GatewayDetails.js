@@ -83,7 +83,7 @@ class GatewayDetails extends Component {
 
   render() {
     if (this.props.gateway === undefined || this.state.statsDown === undefined || this.state.statsUp === undefined) {
-      return(<div></div>);
+      return (<div></div>);
     }
 
     const style = {
@@ -98,10 +98,10 @@ class GatewayDetails extends Component {
     }
 
     let position = [];
-    if (typeof(this.props.gateway.location.latitude) !== "undefined" && typeof(this.props.gateway.location.longitude !== "undefined")) {
-      position = [this.props.gateway.location.latitude, this.props.gateway.location.longitude]; 
+    if (typeof (this.props.gateway.location.latitude) !== "undefined" && typeof (this.props.gateway.location.longitude !== "undefined")) {
+      position = [this.props.gateway.location.latitude, this.props.gateway.location.longitude];
     } else {
-      position = [0,0];
+      position = [0, 0];
     }
 
     let lastseen = "";
@@ -109,7 +109,7 @@ class GatewayDetails extends Component {
       lastseen = moment(this.props.lastSeenAt).fromNow();
     }
 
-    return(
+    return (
       <Grid container spacing={24}>
         <Grid item xs={6}>
           <Card>
@@ -122,6 +122,12 @@ class GatewayDetails extends Component {
               </Typography>
               <Typography variant="body1" gutterBottom>
                 {this.props.gateway.id}
+              </Typography>
+              <Typography variant="subheading" color="primary">
+                MQTT Key
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                {this.props.gateway.mqttKey}
               </Typography>
               <Typography variant="subheading" color="primary">
                 Altitude

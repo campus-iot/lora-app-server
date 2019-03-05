@@ -20,6 +20,7 @@ import GatewayProfileStore from "../../stores/GatewayProfileStore";
 import LocationStore from "../../stores/LocationStore";
 import MapTileLayer from "../../components/MapTileLayer";
 import theme from "../../theme";
+import EUI64Field from "../../components/EUI64Field";
 
 
 const boardStyles = {
@@ -53,7 +54,7 @@ class GatewayBoardForm extends Component {
   }
 
   render() {
-    return(
+    return (
       <FormControl fullWidth margin="normal">
         <FormLabel className={this.props.classes.formLabel}>Board #{this.props.i} configuration (<a href="#delete" onClick={this.onDelete} className={this.props.classes.a}>delete</a>)</FormLabel>
         <TextField
@@ -105,7 +106,7 @@ const styles = {
 class GatewayForm extends FormComponent {
   constructor() {
     super();
-    
+
     this.state = {
       mapZoom: 15,
     };
@@ -177,20 +178,20 @@ class GatewayForm extends FormComponent {
 
   getNetworkServerOption(id, callbackFunc) {
     NetworkServerStore.get(id, resp => {
-      callbackFunc({label: resp.networkServer.name, value: resp.networkServer.id});
+      callbackFunc({ label: resp.networkServer.name, value: resp.networkServer.id });
     });
   }
 
   getNetworkServerOptions(search, callbackFunc) {
     NetworkServerStore.list(this.props.match.params.organizationID, 999, 0, resp => {
-      const options = resp.result.map((ns, i) => {return {label: ns.name, value: ns.id}});
+      const options = resp.result.map((ns, i) => { return { label: ns.name, value: ns.id } });
       callbackFunc(options);
     });
   }
 
   getGatewayProfileOption(id, callbackFunc) {
     GatewayProfileStore.get(id, resp => {
-      callbackFunc({label: resp.gatewayProfile.name, value: resp.gatewayProfile.id});
+      callbackFunc({ label: resp.gatewayProfile.name, value: resp.gatewayProfile.id });
     });
   }
 
@@ -201,7 +202,7 @@ class GatewayForm extends FormComponent {
     }
 
     GatewayProfileStore.list(this.state.object.networkServerID, 999, 0, resp => {
-      const options = resp.result.map((gp, i) => {return {label: gp.name, value: gp.id}});
+      const options = resp.result.map((gp, i) => { return { label: gp.name, value: gp.id } });
       callbackFunc(options);
     });
   }
@@ -237,7 +238,7 @@ class GatewayForm extends FormComponent {
 
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return (<div></div>);
     }
 
     const style = {
@@ -256,7 +257,7 @@ class GatewayForm extends FormComponent {
       boards = this.state.object.boards.map((b, i) => <GatewayBoardForm key={i} i={i} board={b} onDelete={() => this.deleteGatewayBoard(i)} onChange={board => this.updateGatewayBoard(i, board)} />);
     }
 
-    return(
+    return (
       <Form
         submitLabel={this.props.submitLabel}
         onSubmit={this.onSubmit}
@@ -299,6 +300,16 @@ class GatewayForm extends FormComponent {
           required
           fullWidth
         />}
+        <EUI64Field
+          margin="normal"
+          id="mqttKey"
+          label="MQTT Key"
+          onChange={this.onChange}
+          value={this.state.object.mqttKey || ""}
+          fullWidth
+          required
+          random
+        />
         {!this.props.update && <FormControl fullWidth margin="normal">
           <FormLabel className={this.props.classes.formLabel} required>Network-server</FormLabel>
           <AutocompleteSelect
@@ -310,7 +321,7 @@ class GatewayForm extends FormComponent {
             getOptions={this.getNetworkServerOptions}
           />
           <FormHelperText>
-            Select the network-server to which the gateway will connect. When no network-servers are available in the dropdown, make sure a service-profile exists for this organization. 
+            Select the network-server to which the gateway will connect. When no network-servers are available in the dropdown, make sure a service-profile exists for this organization.
           </FormHelperText>
         </FormControl>}
         <FormControl fullWidth margin="normal">
@@ -368,7 +379,7 @@ class GatewayForm extends FormComponent {
             animate={true}
             scrollWheelZoom={false}
             onZoomend={this.updateZoom}
-            >
+          >
             <MapTileLayer />
             <Marker position={position} draggable={true} onDragend={this.updatePosition} ref="marker" />
           </Map>

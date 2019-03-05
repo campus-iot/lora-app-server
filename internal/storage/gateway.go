@@ -37,6 +37,7 @@ type Gateway struct {
 	LastPingSentAt   *time.Time    `db:"last_ping_sent_at"`
 	NetworkServerID  int64         `db:"network_server_id"`
 	GatewayProfileID *string       `db:"gateway_profile_id"`
+	MqttKey          lorawan.EUI64 `db:"mqtt_key"`
 }
 
 // GatewayPing represents a gateway ping.
@@ -113,8 +114,9 @@ func CreateGateway(db sqlx.Execer, gw *Gateway) error {
 			last_ping_id,
 			last_ping_sent_at,
 			network_server_id,
-			gateway_profile_id
-		) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+			gateway_profile_id,
+			mqtt_key
+		) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
 		gw.MAC[:],
 		gw.CreatedAt,
 		gw.UpdatedAt,
@@ -126,6 +128,7 @@ func CreateGateway(db sqlx.Execer, gw *Gateway) error {
 		gw.LastPingSentAt,
 		gw.NetworkServerID,
 		gw.GatewayProfileID,
+		gw.MqttKey[:],
 	)
 	if err != nil {
 		return handlePSQLError(Insert, err, "insert error")
@@ -156,7 +159,8 @@ func UpdateGateway(db sqlx.Execer, gw *Gateway) error {
 			last_ping_id = $7,
 			last_ping_sent_at = $8,
 			network_server_id = $9,
-			gateway_profile_id = $10
+			gateway_profile_id = $10,
+			mqtt_key = $11
 		where
 			mac = $1`,
 		gw.MAC[:],
@@ -169,6 +173,7 @@ func UpdateGateway(db sqlx.Execer, gw *Gateway) error {
 		gw.LastPingSentAt,
 		gw.NetworkServerID,
 		gw.GatewayProfileID,
+		gw.MqttKey[:],
 	)
 	if err != nil {
 		return handlePSQLError(Update, err, "update error")
