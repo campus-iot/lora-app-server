@@ -102,7 +102,12 @@ func CreateGateway(db sqlx.Execer, gw *Gateway) error {
 	gw.CreatedAt = now
 	gw.UpdatedAt = now
 
-	_, err := db.Exec(`
+	mqttKeyHash, err := hash(gw.MqttKey.String(), saltSize, HashIterations)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
 		insert into gateway (
 			mac,
 			created_at,
@@ -115,8 +120,9 @@ func CreateGateway(db sqlx.Execer, gw *Gateway) error {
 			last_ping_sent_at,
 			network_server_id,
 			gateway_profile_id,
-			mqtt_key
-		) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+			mqtt_key,
+			mqtt_key_hash
+		) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
 		gw.MAC[:],
 		gw.CreatedAt,
 		gw.UpdatedAt,
@@ -129,6 +135,7 @@ func CreateGateway(db sqlx.Execer, gw *Gateway) error {
 		gw.NetworkServerID,
 		gw.GatewayProfileID,
 		gw.MqttKey[:],
+		mqttKeyHash,
 	)
 	if err != nil {
 		return handlePSQLError(Insert, err, "insert error")
@@ -149,6 +156,11 @@ func UpdateGateway(db sqlx.Execer, gw *Gateway) error {
 
 	now := time.Now()
 
+	mqttKeyHash, err := hash(gw.MqttKey.String(), saltSize, HashIterations)
+	if err != nil {
+		return err
+	}
+
 	res, err := db.Exec(`
 		update gateway
 			set updated_at = $2,
@@ -160,7 +172,8 @@ func UpdateGateway(db sqlx.Execer, gw *Gateway) error {
 			last_ping_sent_at = $8,
 			network_server_id = $9,
 			gateway_profile_id = $10,
-			mqtt_key = $11
+			mqtt_key = $11,
+			mqtt_key_hash = $12
 		where
 			mac = $1`,
 		gw.MAC[:],
@@ -174,6 +187,7 @@ func UpdateGateway(db sqlx.Execer, gw *Gateway) error {
 		gw.NetworkServerID,
 		gw.GatewayProfileID,
 		gw.MqttKey[:],
+		mqttKeyHash,
 	)
 	if err != nil {
 		return handlePSQLError(Update, err, "update error")
