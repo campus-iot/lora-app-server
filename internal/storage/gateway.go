@@ -38,6 +38,7 @@ type Gateway struct {
 	NetworkServerID  int64         `db:"network_server_id"`
 	GatewayProfileID *string       `db:"gateway_profile_id"`
 	MqttKey          lorawan.EUI64 `db:"mqtt_key"`
+	MqttKeyHash      string        `db:"mqtt_key_hash"`
 }
 
 // GatewayPing represents a gateway ping.
