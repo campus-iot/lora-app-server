@@ -14,7 +14,6 @@ import { Line } from "react-chartjs-2";
 
 import MapTileLayer from "../../components/MapTileLayer";
 import GatewayStore from "../../stores/GatewayStore";
-import SessionStore from "../../stores/SessionStore";
 
 
 const styles = {
@@ -27,27 +26,12 @@ const styles = {
 class GatewayDetails extends Component {
   constructor() {
     super();
-    this.state = {
-      admin: false,
-    };
-    this.setIsAdmin = this.setIsAdmin.bind(this);
+    this.state = {};
     this.loadStats = this.loadStats.bind(this);
   }
 
   componentDidMount() {
-    SessionStore.on("change", this.setIsAdmin);
-    this.setIsAdmin();
     this.loadStats();
-  }
-
-  componentWillUnmount() {
-    SessionStore.removeListener("change", this.setIsAdmin);
-  }
-
-  setIsAdmin() {
-    this.setState({
-      admin: SessionStore.isAdmin() || SessionStore.isOrganizationAdmin(this.props.match.params.organizationID),
-    });
   }
 
   loadStats() {
@@ -139,12 +123,6 @@ class GatewayDetails extends Component {
               <Typography variant="body1" gutterBottom>
                 {this.props.gateway.id}
               </Typography>
-              {this.state.admin && <Typography variant="subheading" color="primary">
-                MQTT Key
-              </Typography>}
-              {this.state.admin && <Typography variant="body1" gutterBottom>
-                {this.props.gateway.mqttKey}
-              </Typography>}
               <Typography variant="subheading" color="primary">
                 Altitude
               </Typography>
