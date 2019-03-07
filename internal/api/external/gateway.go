@@ -58,7 +58,7 @@ func (a *GatewayAPI) Create(ctx context.Context, req *pb.CreateGatewayRequest) (
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mac: %s", err)
 	}
 
-	var mqttKey lorawan.EUI64
+	var mqttKey lorawan.AES128Key
 	if err := mqttKey.UnmarshalText([]byte(req.Gateway.MqttKey)); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mqttKey: %s", err)
 	}
@@ -321,7 +321,7 @@ func (a *GatewayAPI) Update(ctx context.Context, req *pb.UpdateGatewayRequest) (
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mac: %s", err)
 	}
 
-	var mqttKey lorawan.EUI64
+	var mqttKey lorawan.AES128Key
 	if err := mqttKey.UnmarshalText([]byte(req.Gateway.MqttKey)); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "bad gateway mqttKey: %s", err)
 	}

@@ -26,19 +26,19 @@ var gatewayNameRegexp = regexp.MustCompile(`^[\w-]+$`)
 
 // Gateway represents a gateway.
 type Gateway struct {
-	MAC              lorawan.EUI64 `db:"mac"`
-	CreatedAt        time.Time     `db:"created_at"`
-	UpdatedAt        time.Time     `db:"updated_at"`
-	Name             string        `db:"name"`
-	Description      string        `db:"description"`
-	OrganizationID   int64         `db:"organization_id"`
-	Ping             bool          `db:"ping"`
-	LastPingID       *int64        `db:"last_ping_id"`
-	LastPingSentAt   *time.Time    `db:"last_ping_sent_at"`
-	NetworkServerID  int64         `db:"network_server_id"`
-	GatewayProfileID *string       `db:"gateway_profile_id"`
-	MqttKey          lorawan.EUI64 `db:"mqtt_key"`
-	MqttKeyHash      string        `db:"mqtt_key_hash"`
+	MAC              lorawan.EUI64     `db:"mac"`
+	CreatedAt        time.Time         `db:"created_at"`
+	UpdatedAt        time.Time         `db:"updated_at"`
+	Name             string            `db:"name"`
+	Description      string            `db:"description"`
+	OrganizationID   int64             `db:"organization_id"`
+	Ping             bool              `db:"ping"`
+	LastPingID       *int64            `db:"last_ping_id"`
+	LastPingSentAt   *time.Time        `db:"last_ping_sent_at"`
+	NetworkServerID  int64             `db:"network_server_id"`
+	GatewayProfileID *string           `db:"gateway_profile_id"`
+	MqttKey          lorawan.AES128Key `db:"mqtt_key"`
+	MqttKeyHash      string            `db:"mqtt_key_hash"`
 }
 
 // GatewayPing represents a gateway ping.

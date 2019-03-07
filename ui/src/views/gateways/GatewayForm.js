@@ -20,7 +20,7 @@ import GatewayProfileStore from "../../stores/GatewayProfileStore";
 import LocationStore from "../../stores/LocationStore";
 import MapTileLayer from "../../components/MapTileLayer";
 import theme from "../../theme";
-import EUI64Field from "../../components/EUI64Field";
+import MQTTKeyField from "../../components/MQTTKeyField";
 
 
 const boardStyles = {
@@ -300,12 +300,12 @@ class GatewayForm extends FormComponent {
           required
           fullWidth
         />}
-        <EUI64Field
-          margin="normal"
+        <MQTTKeyField
           id="mqttKey"
-          label="MQTT Key"
+          label="MQTT key"
           onChange={this.onChange}
           value={this.state.object.mqttKey || ""}
+          margin="normal"
           fullWidth
           required
           random
