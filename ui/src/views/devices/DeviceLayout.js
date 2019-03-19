@@ -177,7 +177,7 @@ class DeviceLayout extends Component {
             <Route exact path={`${this.props.match.path}/activation`} render={props => <DeviceActivation device={this.state.device.device} admin={this.state.admin} deviceProfile={this.state.deviceProfile.deviceProfile} {...props} />} />
             <Route exact path={`${this.props.match.path}/data`} render={props => <DeviceData device={this.state.device.device} admin={this.state.admin} {...props} />} />
             <Route exact path={`${this.props.match.path}/frames`} render={props => <DeviceFrames device={this.state.device.device} admin={this.state.admin} {...props} />} />
-            <Route exact path={`${this.props.match.path}/map`} render={props => <MapDevice device={this.state.device.device} admin={this.state.admin} {...props} />} />
+            <Route exact path={`${this.props.match.path}/map`} render={props => <MapDevice device={this.state.device} admin={this.state.admin} {...props} />} />
           </Switch>
         </Grid>
       </Grid>
